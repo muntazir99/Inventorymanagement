@@ -65,6 +65,7 @@ def login():
     if "authenticated" not in st.session_state:
         st.session_state.authenticated = False
         st.session_state.role = None
+        st.session_state.username = None
 
     if not st.session_state.authenticated:
         st.header("Login")
@@ -76,8 +77,17 @@ def login():
             if is_authenticated:
                 st.session_state.authenticated = True
                 st.session_state.role = role
+                st.session_state.username = username
                 st.success("Logged in successfully!")
             else:
                 st.error("Invalid username or password")
+        else:
+            st.sidebar.success(f"Logged in as: {st.session_state.username}")
+            if st.sidebar.button("Logout"):
+                st.session_state.authenticated = False
+                st.session_state.role = None
+                st.session_state.username = None
+                st.success("Logged out successfully!")
+
 
     return st.session_state.authenticated, st.session_state.role
