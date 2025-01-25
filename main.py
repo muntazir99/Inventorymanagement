@@ -141,11 +141,11 @@ if st.session_state.authenticated:
         for key in ['authenticated', 'role']:
             st.session_state.pop(key, None)
         st.success("Logged out successfully!")
-        st.experimental_rerun()
+        st.rerun()
 
 else:
     is_authenticated, role = login()
     if is_authenticated:
         st.session_state.authenticated = True
         st.session_state.role = role
-        st.experimental_rerun()
+        st.rerun()
