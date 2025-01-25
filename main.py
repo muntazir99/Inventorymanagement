@@ -5,15 +5,19 @@ from log_manager import log_allotment, log_return, view_log
 from taker_view import view_taker_data
 from auth import login, create_user, update_password
 
-# Streamlit App
+# Initialize session state for authentication
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+if 'role' not in st.session_state:
+    st.session_state.role = None
+
+# Streamlit App Title
 st.title("Aaruush Inventory")
 
 # Authentication
-is_authenticated, role = login()  # Improved login with role-based access
-
-if is_authenticated:
+if st.session_state.authenticated:
     st.sidebar.title("Actions")
-    st.sidebar.success(f"Logged in as: {role.capitalize()}")
+    st.sidebar.success(f"Logged in as: {st.session_state.role.capitalize()}")
 
     # Admin and user-specific options
     admin_options = [
@@ -37,7 +41,7 @@ if is_authenticated:
 
     # Show options based on user role
     option = st.sidebar.selectbox(
-        "Choose an action", admin_options if role == "admin" else user_options
+        "Choose an action", admin_options if st.session_state.role == "admin" else user_options
     )
 
     # Fetch inventory items
@@ -60,7 +64,7 @@ if is_authenticated:
         st.header("Current Inventory")
         view_inventory()
 
-    elif option == "Add Item" and role == "admin":
+    elif option == "Add Item" and st.session_state.role == "admin":
         st.header("Add a New Item")
         item_name = st.selectbox("Select Item or Type New", inventory_items + ["Other"])
         if item_name == "Other":
@@ -70,7 +74,7 @@ if is_authenticated:
             add_item(item_name, quantity)
             st.success(f"Added {item_name} with quantity {quantity} to the inventory.")
 
-    elif option == "Allot Item" and role == "admin":
+    elif option == "Allot Item" and st.session_state.role == "admin":
         st.header("Allot an Item")
         item_name = st.selectbox("Select Item or Type New", inventory_items + ["Other"])
         if item_name == "Other":
@@ -86,7 +90,7 @@ if is_authenticated:
             else:
                 st.error(f"Failed to allot {quantity} of {item_name}. Item may not exist or insufficient quantity.")
 
-    elif option == "Return Item" and role == "admin":
+    elif option == "Return Item" and st.session_state.role == "admin":
         st.header("Return an Item")
         item_name = st.selectbox("Select Item", inventory_items)
         quantity_returned = st.number_input("Quantity to Return", min_value=1, step=1)
@@ -98,7 +102,7 @@ if is_authenticated:
             else:
                 st.error(f"Failed to return {quantity_returned} of {item_name}.")
 
-    elif option == "View Log" and role == "admin":
+    elif option == "View Log" and st.session_state.role == "admin":
         st.header("Inventory Log")
         view_log()
 
@@ -106,14 +110,14 @@ if is_authenticated:
         st.header("Takers and Their Allotted Components")
         view_taker_data()
 
-    elif option == "Consolidate Inventory" and role == "admin":
+    elif option == "Consolidate Inventory" and st.session_state.role == "admin":
         st.header("Consolidate Inventory")
         st.write("Combine duplicate items in the inventory by summing their quantities.")
         if st.button("Consolidate Now"):
             consolidate_inventory()
             st.success("Inventory consolidated successfully.")
 
-    elif option == "Add User" and role == "admin":
+    elif option == "Add User" and st.session_state.role == "admin":
         st.header("Add New User")
         new_username = st.text_input("New Username")
         new_password = st.text_input("New Password", type="password")
@@ -134,6 +138,14 @@ if is_authenticated:
                 st.error(message)
 
     if st.sidebar.button("Logout"):
-        st.session_state.authenticated = False
-        st.session_state.role = None
+        for key in ['authenticated', 'role']:
+            st.session_state.pop(key, None)
         st.success("Logged out successfully!")
+        st.experimental_rerun()
+
+else:
+    is_authenticated, role = login()
+    if is_authenticated:
+        st.session_state.authenticated = True
+        st.session_state.role = role
+        st.experimental_rerun()
