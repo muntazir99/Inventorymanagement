@@ -6,7 +6,7 @@ from taker_view import view_taker_data
 from auth import login, create_user, update_password
 
 # Streamlit App
-st.title("Secure Inventory Management System")
+st.title("Aaruush Inventory")
 
 # Authentication
 is_authenticated, role = login()  # Improved login with role-based access
