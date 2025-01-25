@@ -1,0 +1,50 @@
+# Python bytecode and cache
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+.env/
+*.env
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Streamlit specific files
+.streamlit/
+*/.streamlit/
+*/.streamlit_secrets.toml
+
+# Logs
+*.log
+
+# Compiled files and binaries
+*.so
+*.dll
+*.dylib
+*.exe
+
+# Database files
+*.sqlite
+*.db
+
+# Environment files
+*.env
+.env
+
+# Node.js files (if applicable)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/

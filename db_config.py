@@ -1,6 +1,13 @@
+
+import os
 from pymongo import MongoClient
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 def get_db():
-    client = MongoClient('mongodb+srv://muntazir9934:JZSN7jdZLUaHRyx3@main.taa62.mongodb.net/?retryWrites=true&w=majority&appName=main')
-    db = client['inventoryESM']
+    mongo_uri = os.getenv("MONGO_URI") 
+    client = MongoClient(mongo_uri)
+    db = client['inventoryESM']  
     return db
