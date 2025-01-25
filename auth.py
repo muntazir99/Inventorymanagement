@@ -62,15 +62,16 @@ def authenticate(username, password):
 
 
 def login():
+    # Initialize session state variables
     if 'authenticated' not in st.session_state:
         st.session_state.authenticated = False
-    if 'role' not in st.session_state:
-        st.session_state.role = None
     if 'username' not in st.session_state:
         st.session_state.username = None
+    if 'role' not in st.session_state:
+        st.session_state.role = None
 
     if not st.session_state.authenticated:
-        st.sidebar.header("Login")
+        st.sidebar.title("Login")
         username = st.sidebar.text_input("Username")
         password = st.sidebar.text_input("Password", type="password")
 
@@ -78,10 +79,11 @@ def login():
             is_authenticated, role = authenticate(username, password)
             if is_authenticated:
                 st.session_state.authenticated = True
-                st.session_state.role = role
                 st.session_state.username = username
-                st.sidebar.success("Logged in successfully!")
+                st.session_state.role = role
+                st.sidebar.success(f"Logged in as: {username}")
             else:
                 st.sidebar.error("Invalid username or password")
-
+    
     return st.session_state.authenticated, st.session_state.role
+
